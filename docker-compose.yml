@@ -7,20 +7,31 @@ services:
       MYSQL_DATABASE: espocrm
       MYSQL_USER: espocrmuser
       MYSQL_PASSWORD: espocrmpass
-    ports:
-      - "3307:3306"
     volumes:
       - db_data:/var/lib/mysql
     networks:
       - espocrm-net
 
-  web:
+  web1:
     image: espocrm/espocrm:latest
-    container_name: espocrm_web
+    container_name: espocrm_web1
     depends_on:
       - db
-    ports:
-      - "8080:80"
+    environment:
+      DB_HOST: db
+      DB_USER: espocrmuser
+      DB_PASSWORD: espocrmpass
+      DB_NAME: espocrm
+    volumes:
+      - espocrm_data:/var/www/html
+    networks:
+      - espocrm-net
+
+  web2:
+    image: espocrm/espocrm:latest
+    container_name: espocrm_web2
+    depends_on:
+      - db
     environment:
       DB_HOST: db
       DB_USER: espocrmuser
@@ -52,30 +63,15 @@ services:
     networks:
       - espocrm-net
 
-  web2:
-    image: espocrm/espocrm:latest
-    container_name: espocrm_web2
-    depends_on:
-      - db
-    environment:
-      DB_HOST: db
-      DB_USER: espocrmuser
-      DB_PASSWORD: espocrmpass
-      DB_NAME: espocrm
-    networks:
-      - espocrm-net
-    volumes:
-      - espocrm_data:/var/www/html
-
   nginx:
     image: nginx:alpine
     container_name: espocrm_nginx
     ports:
-      - "8082:80"
+      - "80:80"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
-      - web
+      - web1
       - web2
     networks:
       - espocrm-net
