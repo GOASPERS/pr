@@ -32,7 +32,7 @@ services:
       - espocrm-net
 
   phpmyadmin:
-    image: arm64v8/phpmyadmin
+    image: phpmyadmin/phpmyadmin
     container_name: espocrm_phpmyadmin
     environment:
       PMA_HOST: db
