@@ -1,37 +1,37 @@
-Name: CI for EspoCRM (Docker)
- 
-On:
-  Push:
-    Branches:
-      - main
-  Pull_request:
-    Branches:
-      - main
- 
-Jobs:
-  Ci:
-    Runs-on: ubuntu-latest
- 
-    Steps:
-      - name: Checkout repository
-        Uses: actions/checkout@v3
- 
-      - name: Set up Docker Buildx
-        Uses: docker/setup-buildx-action@v2
- 
-      - name: Validate docker-compose configuration
-        Run: docker compose -f docker-compose.yml config
- 
-      - name: Build Docker images
-        Run: docker compose -f docker-compose.yml build
- 
-      - name: Run containers for smoke test
-        Run: |
-          Docker compose -f docker-compose.yml up -d
-          Sleep 30
- 
-      - name: Check EspoCRM availability
-        Run: curl -I http://localhost
- 
-      - name: Stop containers
-        Run: docker compose down
+name: CI for EspoCRM (Docker)
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Validate docker-compose configuration
+        run: docker compose -f docker-compose.yml config
+
+      - name: Build Docker images
+        run: docker compose -f docker-compose.yml build
+
+      - name: Run containers for smoke test
+        run: |
+          docker compose -f docker-compose.yml up -d
+          sleep 30
+
+      - name: Check EspoCRM availability
+        run: curl -I http://localhost
+
+      - name: Stop containers
+        run: docker compose down
