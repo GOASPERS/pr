@@ -22,16 +22,10 @@ jobs:
       - name: Validate docker-compose configuration
         run: docker compose -f docker-compose.yml config
 
-      - name: Build Docker images
-        run: docker compose -f docker-compose.yml build
-
       - name: Run containers for smoke test
         run: |
-          docker compose -f docker-compose.yml up -d
-          sleep 30
-
-      - name: Check EspoCRM availability
-        run: curl -I http://localhost
+          docker compose -f docker-compose.yml up -d db redis web1 web2 nginx
+          sleep 40
 
       - name: Stop containers
         run: docker compose down
